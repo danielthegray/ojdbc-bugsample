@@ -3,15 +3,22 @@
  */
 package ojdbc.bugsample;
 
+import oracle.jdbc.OracleConnection;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class App {
     public static void main(String[] args) {
         System.out.println("Establishing connection to DB...");
-        try (Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/XE", "SYSTEM", "system");
+        Properties connectionInfo = new Properties();
+        connectionInfo.setProperty("user", "SYSTEM");
+        connectionInfo.setProperty("password", "system");
+        connectionInfo.setProperty(OracleConnection.CONNECTION_PROPERTY_THIN_NET_DISABLE_OUT_OF_BAND_BREAK, "true");
+        try (Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/XE", connectionInfo);
              ResultSet resultSet = conn.createStatement().executeQuery("SELECT 1 FROM DUAL");) {
             if (resultSet.next()) {
                 int one = resultSet.getInt(1);
