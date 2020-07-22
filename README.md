@@ -35,6 +35,42 @@ and it will run the test with versions:
 * 12.2.0.1
 * 18.3.0.0
 * 19.3.0.0
+* 19.6.0.0
+* 19.7.0.0
 
 From version 19.3.0.0 onwards (19.6, 19.7), there is a strange timeout error and the message
-"Got minus one from read call".
+"Got minus one from a read call".
+
+The full error stack trace is pasted below:
+```
+> Task :run
+Establishing connection to DB...
+java.sql.SQLRecoverableException: IO Error: Got minus one from a read call
+        at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:858)
+        at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:793)
+        at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:57)
+        at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:747)
+        at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:562)
+        at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:677)
+        at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:228)
+        at ojdbc.bugsample.App.main(App.java:14)
+Caused by: oracle.net.ns.NetException: Got minus one from a read call
+        at oracle.net.ns.NSProtocolNIO.doSocketRead(NSProtocolNIO.java:557)
+        at oracle.net.ns.NIOPacket.readHeader(NIOPacket.java:258)
+        at oracle.net.ns.NIOPacket.readPacketFromSocketChannel(NIOPacket.java:190)
+        at oracle.net.ns.NIOPacket.readFromSocketChannel(NIOPacket.java:132)
+        at oracle.net.ns.NIOPacket.readFromSocketChannel(NIOPacket.java:105)
+        at oracle.net.ns.NIONSDataChannel.readDataFromSocketChannel(NIONSDataChannel.java:91)
+        at oracle.net.ano.AnoCommNIO.p(Unknown Source)
+        at oracle.net.ano.AnoCommNIO.e(Unknown Source)
+        at oracle.net.ano.AnoComm.readUB4(Unknown Source)
+        at oracle.net.ano.Ano.c(Unknown Source)
+        at oracle.net.ano.Ano.negotiation(Unknown Source)
+        at oracle.net.ns.NSProtocol.connect(NSProtocol.java:368)
+        at oracle.jdbc.driver.T4CConnection.connect(T4CConnection.java:1600)
+        at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:591)
+        ... 7 more
+
+BUILD SUCCESSFUL in 1m 0s
+2 actionable tasks: 2 executed
+```
